@@ -207,7 +207,8 @@ QStringList setControl::getSetDirectories()
 {
     QDir dir(this->setPath);
     dir.setFilter(QDir::NoDotAndDotDot | QDir::Dirs);
-    this->setName = dir.entryList().at(0);
+    if(!dir.entryInfoList().isEmpty())
+        this->setName = dir.entryList().at(0);
 
 //    QSqlTableModel *set_model = new QSqlTableModel(this);
 //    this->db->getSetsModel(set_model);

@@ -339,6 +339,8 @@ void MainWindow::on_classComboBox_currentIndexChanged(const QString &arg1)
 void MainWindow::on_actionExport_Dataset_triggered()
 {
     ExportDataSet *exportData = new ExportDataSet();
+    if(this->setController->db == nullptr)
+            return;
     if(exportData->setDatabase(this->setController->db)) {
         exportData->setBasePath(this->setController->getSetPath());
         qDebug () << "SET PATH YO " << this->setController->getSetPath();
