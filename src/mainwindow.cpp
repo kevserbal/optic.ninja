@@ -298,7 +298,7 @@ void MainWindow::on_addClassButton_clicked()
         qDebug() << "CLASS NAME " << text;
 
 //        const QColorDialog::ColorDialogOptions options = QFlag(colorDialogOptionsWidget->value());
-        const QColor color = QColorDialog::getColor(Qt::green, this, "Select Color");
+        const QColor color = QColorDialog::getColor(Qt::green, this, "Select Color", QColorDialog::DontUseNativeDialog);
 
         if (color.isValid()) {
 //            colorLabel->setText(color.name());

@@ -912,6 +912,10 @@ void ImageView::clearImageBuffer()
 
 QImage const *ImageView::getCurrentBufferImage()
 {
+    if(this->currentBufferImageIndex < 1){
+        const QImage *image = new QImage;
+        return image;
+    }
     return &this->imageBuffer.at(this->currentBufferImageIndex - 1);
 }
 

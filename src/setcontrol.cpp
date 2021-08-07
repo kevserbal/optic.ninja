@@ -1,4 +1,4 @@
-#include "src/setcontrol.h"
+ #include "src/setcontrol.h"
 
 setControl::setControl(QWidget *parent) :
     QListWidget(parent)
