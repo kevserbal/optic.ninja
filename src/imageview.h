@@ -13,7 +13,7 @@
 #include <QRadioButton>
 #include <QSpinBox>
 #include <QAction>
-
+#include <QMenuBar>
 #include <QToolTip>
 //#include <QRubberBand>
 
@@ -59,6 +59,7 @@ public:
     void setDrawingTool(qint8 drawTool);
 
     void setDatabase(DataLocal *db);
+    void setCurrentBuffer(int currentImage);
 
     enum Drag {
         DragLeft,
@@ -106,7 +107,6 @@ public:
 
 private:
     Ui::ImageView *ui;
-
     //qwidget/qimage zoom level
     double zoomLevel;
     //mouse position with zoom

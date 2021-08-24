@@ -279,8 +279,7 @@ QList<Annotation> DataLocal::getAnnotation(int object_id)
     QList<Annotation> annotation_data;
 
     QSqlQuery annotation_query;
-    annotation_query.prepare("SELECT * FROM annotations WHERE object_id = :object_id");
-    annotation_query.bindValue(":object_id", object_id);
+    annotation_query.prepare("SELECT * FROM annotations WHERE object_id = " + QString::number(object_id) + ";");
 
     bool exec = annotation_query.exec();
     if(!exec)
@@ -629,7 +628,7 @@ bool DataLocal::removeAnnotation(int object_id, int annotation_id)
     qDebug () << "OBJECT ID FOR DELETE " << object_id;
     qDebug() << "ANNOTATION ID FOR DELETE " << annotation_id;
     QSqlQuery remove_annotation;
-    remove_annotation.prepare("DELETE FROM annotations WHERE object_id = :object_id AND id = :annotation_id");
+    remove_annotation.prepare("DELETE FROM annotations WHERE object_id = :object_id AND id = :annotation_id ;");
     remove_annotation.bindValue(":object_id", object_id);
     remove_annotation.bindValue(":annotation_id", annotation_id);
 

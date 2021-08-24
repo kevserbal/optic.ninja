@@ -26,6 +26,7 @@
 #include "src/setcontrol.h"
 #include "src/setimage.h"
 #include "src/exportdataset.h"
+#include <QMenuBar>
 
 namespace Ui {
     class MainWindow;
@@ -51,7 +52,7 @@ class MainWindow : public QMainWindow
     private:
         virtual void keyPressEvent(QKeyEvent *event);
         virtual void keyReleaseEvent(QKeyEvent * event);
-
+        QMenuBar imageActionsMenu;
         bool stop;
         Mat frame;
         int frameRate;

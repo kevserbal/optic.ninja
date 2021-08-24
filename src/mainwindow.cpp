@@ -12,6 +12,8 @@ MainWindow::MainWindow(QWidget *parent) :
     // Setup UI
     ui->setupUi(this);
 
+    this->ui->ImageViewLayout->addWidget(&imageActionsMenu);
+
     // Set start tab as blank
     QLabel *newTab = new QLabel(ui->tabWidget);
 //    newTab->setText("No camera connected.");
@@ -84,6 +86,23 @@ MainWindow::MainWindow(QWidget *parent) :
 //    this->setController->getImageView()->repaint();
 
     this->drawTool = Annotation::draw_square;
+
+//    QAction *act1 = new QAction("Redo", this);
+//    act1->setShortcut(QKeySequence::Redo);
+//    connect(act1, SIGNAL(triggered()), this->setController->getImageView(), SLOT(moveBufferForward()));
+//    imageActionsMenu.addAction(act1);
+
+//    QAction *act2 = new QAction("Undo", this);
+//    act2->setShortcut(QKeySequence::Undo);
+//    imageActionsMenu.addAction(act2);
+//    connect(act2, SIGNAL(triggered()), this->setController->getImageView(), SLOT(moveBufferBackward()));
+
+    QAction *act3 = new QAction("Clear", this);
+    act3->setShortcut(QKeySequence::Delete);
+    imageActionsMenu.addAction(act3);
+    connect(act3, SIGNAL(triggered()), this->setController->getImageView(), SLOT(deleteSelected()));
+
+
 }
 
 MainWindow::~MainWindow()

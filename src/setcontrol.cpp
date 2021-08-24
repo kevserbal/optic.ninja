@@ -360,8 +360,9 @@ bool setControl::setImageStatus(QString setType)
 }
 
 //saves any changes you may of done
-bool setControl::saveImage()
-{
+bool setControl::saveImage() {
+//    this->imgView->setCurrentBuffer(this->currentRow());
+    std::cout << "file saved at : " << this->setFiles.at(this->currentRow())->getImageFileInfo().absoluteFilePath().toStdString() << std::endl;
     this->imgView->getCurrentBufferImage()->save(this->setFiles.at(this->currentRow())->getImageFileInfo().absoluteFilePath());
     this->currentItem()->setIcon(QIcon(this->setFiles.at(this->currentRow())->getImageFileInfo().absoluteFilePath()));
     return true;

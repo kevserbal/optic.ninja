@@ -7,7 +7,6 @@ ImageView::ImageView(QWidget *parent) :
 {
     // Setup UI
     ui->setupUi(this);
-
     this->zoomLevel = 1;
     this->mouseXPosition = 0;
     this->mouseYPosition = 0;
@@ -20,21 +19,6 @@ ImageView::ImageView(QWidget *parent) :
 //    this->setFocusPolicy(Qt::StrongFocus);
 
     this->currentBufferImageIndex = 0;
-
-    QAction *act1 = new QAction(this);
-    act1->setShortcut(QKeySequence::Redo);
-    connect(act1, SIGNAL(triggered()), this, SLOT(moveBufferForward()));
-
-    QAction *act2 = new QAction(this);
-    act2->setShortcut(QKeySequence::Undo);
-    connect(act2, SIGNAL(triggered()), this, SLOT(moveBufferBackward()));
-
-    QAction *act3 = new QAction(this);
-    act3->setShortcut(QKeySequence::Delete);
-    connect(act3, SIGNAL(triggered()), this, SLOT(deleteSelected()));
-
-    this->addAction(act1);
-    this->addAction(act2);
 
     this->mouseState = None;
     this->DragState = DragNone;
@@ -53,6 +37,10 @@ ImageView::~ImageView()
 void ImageView::setDatabase(DataLocal *db)
 {
     this->db = db;
+}
+
+void ImageView::setCurrentBuffer(int currentImage) {
+    this->currentBufferImageIndex = currentImage +1;
 }
 
 void ImageView::setDrawingTool(qint8 drawToolParam)
@@ -111,6 +99,11 @@ void ImageView::deleteSelected()
         else
             ++it;
     }
+
+    this->update();
+    this->reDraw();
+
+    std::cout << "Cleared annotations" << std::endl;
 }
 
 void ImageView::keyPressEvent(QKeyEvent *event)
@@ -861,6 +854,7 @@ void ImageView::clearAnnotationBuffer()
 {
 //    this->boxBuffer.clear();
     this->annotationsBuffer.clear();
+    this->update();
 }
 
 QList<Annotation> ImageView::getAnnotations()
@@ -885,7 +879,7 @@ void ImageView::addBufferFrame(SetImage *setImage)
     this->currentBufferImageIndex = this->imageBuffer.count();
 
     qDebug() << " set Image index " << setImage->index;
-    for(Annotation annotation: this->db->getAnnotation(setImage->index+1))
+    for(Annotation annotation: this->db->getAnnotation(this->current_image_id))
     {
         qDebug() << "found annotation";
         this->addAnnotation(annotation);

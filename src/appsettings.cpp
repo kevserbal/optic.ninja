@@ -2,7 +2,7 @@
 
 appSettings::appSettings()
 {
-    this->settingsPath = QDir::homePath() + QDir::separator() + "optic.ninja";
+    this->settingsPath = QDir::homePath() + QDir::separator() + "optic.ninja_1";
     this->setsPath = this->settingsPath + QDir::separator() + "sets";
 
     QDir dir = QDir(settingsPath);
