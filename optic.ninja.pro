@@ -13,7 +13,7 @@ DEFINES += APP_VERSION=\\\"1.0.0\\\" \
             USECV3=0 \
             USECV4=1
 
-#CONFIG += console
+CONFIG += release
 QT       += core gui sql
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = optic.ninja
