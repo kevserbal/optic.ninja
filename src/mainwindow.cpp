@@ -41,9 +41,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setImageExtensionTextEdit->setText(this->appSettingsController->getSetImageExtensions());
 
     //create set controller
-    this->setController = ui->SetViewWidget;
+    this->setController = new setControl;
+    this->setController->setParent(this);
+    this->setController->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    this->setController->setFixedWidth(500);
     this->setController->initalize(appSettingsController);
-
+    this->setController->setStyleSheet("background-color:transparent;");
+    this->ui->setControllerWidget->layout()->addWidget(this->setController);
+    connect(this->setController, &setControl::setItemClickedSignal, this, &MainWindow::onSetItemClicked);
     // add sets to ui combo selection drop down
     // only need to call this function on initalization because it also
     // initalizes the class view drop down due to the nature of using the slot
@@ -59,18 +64,18 @@ MainWindow::MainWindow(QWidget *parent) :
     //add items to set list widget
     this->setController->getSetFiles();
 
-    QScrollArea *scrollArea = new QScrollArea;
+    QScrollArea *scrollArea = new QScrollArea(this);
     scrollArea->setAlignment(Qt::AlignHCenter);
     scrollArea->setBackgroundRole(QPalette::Dark);
     scrollArea->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
     scrollArea->setGeometry(ui->ImageViewLayout->geometry());
     scrollArea->setWidget(this->setController->getImageView());
+    scrollArea->setStyleSheet("background-color:transparent;");
     connect(ui->setImagespinBox, SIGNAL(valueChanged(int)), this->setController->getImageView(), SLOT(zoomChanged(int)));
 
     //add image view widget to main window
     ui->ImageViewLayout->addWidget(scrollArea);
 
-    ui->AnnotationTreeLayout->addWidget(this->setController->getSetAnnotations());
 //    ui->AnnotationTreeLayout->setGeometry(new QRect())
 
     //setup shortcut keys
@@ -218,6 +223,11 @@ void MainWindow::recieveSetText(const QString &newText)
     dir.setFilter(QDir::NoDotAndDotDot | QDir::Dirs);
     QStringList files = dir.entryList();
     ui->setComboBox->addItems(files);
+}
+
+void MainWindow::onSetItemClicked(QStringList classNames) {
+    this->ui->annotationNamesListWidget->clear();
+    this->ui->annotationNamesListWidget->addItems(classNames);
 }
 
 void MainWindow::on_setComboBox_currentIndexChanged(const QString &arg1)

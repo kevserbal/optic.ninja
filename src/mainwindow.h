@@ -90,6 +90,7 @@ class MainWindow : public QMainWindow
         void showAboutDialog();
         void setFullScreen(bool);
         void recieveSetText(const QString &newText);
+        void onSetItemClicked(QStringList classNames);
 
     private slots:
         void on_saveAppSettingsButton_clicked();

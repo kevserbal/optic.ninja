@@ -7,15 +7,10 @@ setControl::setControl(QWidget *parent) :
 
     //create image viewer
     if(this->USE_GRAPHICS_VIEW)
-        this->imgGView = new imageGraphicsView();
+        this->imgGView = new imageGraphicsView(this);
     else
-        this->imgView = new ImageView();
+        this->imgView = new ImageView(this);
 
-    this->setAnnotations = new SetAnnotations();
-}
-
-SetAnnotations *setControl::getSetAnnotations() {
-    return this->setAnnotations;
 }
 
 void setControl::initalize(appSettings *appSettingsParm)
@@ -140,10 +135,13 @@ void setControl::setItemClicked(int currentRow) {
         this->getImageView()->clearImageBuffer();
 //        QImage tempImage = this->setFiles.at(currentRow)->getImageQImage();
         this->getImageView()->addBufferFrame(this->setFiles[currentRow]);
+        QStringList classNames;
 
         for(int i = 0; i < this->getImageView()->getAnnotations().count(); i++) {
-            new QListWidgetItem(this->getImageView()->getAnnotations().at(i).class_name, this->getSetAnnotations());
+            classNames.append(this->getImageView()->getAnnotations().at(i).class_name);
+//            this->getSetAnnotations()->addItem(item);
         }
+        emit this->setItemClickedSignal(classNames);
         //this->sceneContainer->clear();
 
 //        this->sceneContainer->addPixmap(this->setFiles.at(currentRow)->getImageQPixmap());

@@ -37,7 +37,6 @@ public:
     QString getImageSize(QString filePath);
     QString getImageBufferSize();
     void getSetFileNames(QString setName);
-    SetAnnotations *getSetAnnotations();
 
     QString getSetName();
     QString getSetPath();
@@ -82,13 +81,13 @@ private:
     ImageView *imgView;
     imageGraphicsView *imgGView;
     appSettings *appSettingsController;
-    SetAnnotations *setAnnotations;
 
 protected:
     void scrollContentsBy(int dx, int dy);
 
 signals:
 //        void newFrame(QPixmap *pixmapFrame);
+    void setItemClickedSignal(QStringList classNames);
 
 public slots:
         void setItemClicked(int currentRow);
