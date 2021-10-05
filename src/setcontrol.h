@@ -63,6 +63,12 @@ public:
     DataLocal *db = nullptr;
     QStringList sets;
 
+    void setFileNameLabel(QLabel *value);
+
+    void setFileSizeLabel(QLabel *value);
+    void setMouseLocationLabel(QLabel *value);
+    void setSetImagespinBox(QSpinBox *value);
+
 private:
     const qint32 reload_scroll_distance = 1000;
     int previous_scroll_x = 0;
@@ -81,9 +87,11 @@ private:
     ImageView *imgView;
     imageGraphicsView *imgGView;
     appSettings *appSettingsController;
+    QLabel *fileNameLabel = nullptr;
+    QLabel *fileSizeLabel = nullptr;
 
 protected:
-    void scrollContentsBy(int dx, int dy);
+//    void scrollContentsBy(int dx, int dy);
 
 signals:
 //        void newFrame(QPixmap *pixmapFrame);

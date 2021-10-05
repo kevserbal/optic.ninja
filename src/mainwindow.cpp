@@ -1,8 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-// Qt
-
-
+#include <QDesktopWidget>
 #include "objectdetection.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -43,11 +41,16 @@ MainWindow::MainWindow(QWidget *parent) :
     //create set controller
     this->setController = new setControl;
     this->setController->setParent(this);
+    this->setController->setFileNameLabel(this->ui->fileNameLabel);
+    this->setController->setMouseLocationLabel(this->ui->mouseLocationLabel);
+    this->setController->setSetImagespinBox(this->ui->setImagespinBox);
     this->setController->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    this->setController->setFixedWidth(500);
+//    this->setController->setFixedWidth(750);
     this->setController->initalize(appSettingsController);
     this->setController->setStyleSheet("background-color:transparent;");
-    this->ui->setControllerWidget->layout()->addWidget(this->setController);
+    this->setController->setMinimumWidth(0);
+
+    this->ui->setControllerWidget->layout()->addWidget(new SetControllerContainerWidget(this->setController, this));
     connect(this->setController, &setControl::setItemClickedSignal, this, &MainWindow::onSetItemClicked);
     // add sets to ui combo selection drop down
     // only need to call this function on initalization because it also
@@ -92,22 +95,28 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->drawTool = Annotation::draw_square;
 
-//    QAction *act1 = new QAction("Redo", this);
-//    act1->setShortcut(QKeySequence::Redo);
-//    connect(act1, SIGNAL(triggered()), this->setController->getImageView(), SLOT(moveBufferForward()));
-//    imageActionsMenu.addAction(act1);
+    QAction *act1 = new QAction(this);
+    act1->setShortcut(QKeySequence::Redo);
+    connect(act1, SIGNAL(triggered()), this->setController->getImageView(), SLOT(moveBufferForward()));
+    imageActionsMenu.addAction(act1);
 
-//    QAction *act2 = new QAction("Undo", this);
-//    act2->setShortcut(QKeySequence::Undo);
-//    imageActionsMenu.addAction(act2);
-//    connect(act2, SIGNAL(triggered()), this->setController->getImageView(), SLOT(moveBufferBackward()));
+    QAction *act2 = new QAction(this);
+    act2->setShortcut(QKeySequence::Undo);
+    connect(act2, SIGNAL(triggered()), this->setController->getImageView(), SLOT(moveBufferBackward()));
 
-    QAction *act3 = new QAction("Clear", this);
-    act3->setShortcut(QKeySequence::Delete);
+    QAction *act3 = new QAction("Clear All Annotations", this);
     imageActionsMenu.addAction(act3);
-    connect(act3, SIGNAL(triggered()), this->setController->getImageView(), SLOT(deleteSelected()));
+    connect(act3, SIGNAL(triggered()), this->setController->getImageView(), SLOT(clearAllAnnotations()));
 
+    QAction *act4 = new QAction(this);
+    act4->setShortcut(QKeySequence::Delete);
+    connect(act4, SIGNAL(triggered()), this->setController->getImageView(), SLOT(deleteSelected()));
 
+    this->ui->annotationsContainerWidget->setMaximumWidth(QDesktopWidget().availableGeometry(this).size().width()*0.2);
+    this->ui->annotationsContainerWidget->setMaximumHeight(QDesktopWidget().availableGeometry(this).size().width());
+
+    this->setController->setMaximumWidth(QDesktopWidget().availableGeometry(this).size().width()*0.2);
+    this->setController->setMaximumHeight(QDesktopWidget().availableGeometry(this).size().width());
 }
 
 MainWindow::~MainWindow()
@@ -353,7 +362,7 @@ void MainWindow::on_removeClassButton_clicked()
     this->setClassComboBox();
 }
 
-void MainWindow::on_classComboBox_currentIndexChanged(const QString &arg1)
+void MainWindow::on_classComboBox_currentTextChanged(const QString &arg1)
 {
     QStringList class_data = this->setController->db->getClass(arg1);
 
@@ -396,3 +405,4 @@ void MainWindow::on_actionExport_Dataset_triggered()
         }
     }
 }
+

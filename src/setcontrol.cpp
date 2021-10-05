@@ -7,10 +7,9 @@ setControl::setControl(QWidget *parent) :
 
     //create image viewer
     if(this->USE_GRAPHICS_VIEW)
-        this->imgGView = new imageGraphicsView(this);
+        this->imgGView = new imageGraphicsView();
     else
-        this->imgView = new ImageView(this);
-
+        this->imgView = new ImageView();
 }
 
 void setControl::initalize(appSettings *appSettingsParm)
@@ -21,14 +20,12 @@ void setControl::initalize(appSettings *appSettingsParm)
     this->sets = this->getSetDirectories();
 
     if(this->appSettingsController->getSetsViewMode() == 0)
-        this->setViewMode(QListView::ListMode);
+        this->setViewMode(QListView::IconMode);
     else
         this->setViewMode(QListView::IconMode);
 
 //    this->setLayoutMode(QListView::Batched);
     this->setIconSize(QSize(126, 126));
-    this->setMaximumWidth(550);
-    this->setBatchSize(100);
 
     this->extensionList = this->appSettingsController->getSetImageExtensions().split(",");
 
@@ -148,27 +145,11 @@ void setControl::setItemClicked(int currentRow) {
 
 
         //no longer needed because this functionality is wrong for datasets with many classes
-        if(this->parentWidget())
-            if(this->parentWidget()->parentWidget())
-            {
-                QLabel *fileNameLabel = this->parentWidget()->parentWidget()->findChild<QLabel *>("fileNameLabel");
-                fileNameLabel->setText(this->setFiles.at(currentRow)->getImageFileInfo().fileName());
+        if(this->fileNameLabel != nullptr)
+            this->fileNameLabel->setText(this->setFiles.at(currentRow)->getImageFileInfo().fileName());
 
-                QLabel *fileSizeLabel = this->parentWidget()->parentWidget()->findChild<QLabel *>("imageSizeLabel");
-                fileSizeLabel->setText(QString::number((this->setFiles.at(currentRow)->getImageFileInfo().size()) / 1024) + " KB");
-
-//                if(this->setFiles.at(currentRow)->getImageStatus() == "Positive")
-//                {
-//                    QRadioButton *positiveRadioButton = this->parentWidget()->parentWidget()->findChild<QRadioButton *>("positiveImageRadioButton");
-//                    positiveRadioButton->setChecked(true);
-//                }
-
-//                else if(this->setFiles.at(currentRow)->getImageStatus() == "Negative")
-//                {
-//                    QRadioButton *negativeRadioButton = this->parentWidget()->parentWidget()->findChild<QRadioButton *>("negativeImageRadioButton");
-//                    negativeRadioButton->setChecked(true);
-//                }
-            }
+        if(this->fileSizeLabel != nullptr)
+            this->fileSizeLabel->setText(QString::number((this->setFiles.at(currentRow)->getImageFileInfo().size()) / 1024) + " KB");
     }
 }
 
@@ -282,15 +263,15 @@ QList<SetImage *> *setControl::getSetFiles() //QString setNameParm, QString view
 
         this->setFiles.append(setImage);
 
-        if(i < this->add_count)
-        {
+//        if(i < this->add_count)
+//        {
             this->addSetItem(i);
-        }
+//        }
 
-        else if(i == this->add_count)
-        {
-            this->high_index = this->add_count;
-        }
+//        else if(i > this->add_count)
+//        {
+//            this->high_index = this->add_count;
+//        }
         //        QFileInfo fileInfoParm, QString fileSetTypeParm, int index, QObject *parent
 //        this->addSetItem(i, new SetImage(tempFileInfoList.value(i), QString("Undefined"), i));
     }
@@ -304,38 +285,40 @@ QList<SetImage *> *setControl::getSetFiles() //QString setNameParm, QString view
     }
 
     tempFileInfoList.clear();
+    std::cout << "File count :" << this->setFiles.size() << std::endl;
+    this->setBatchSize(this->setFiles.size());
 
     return &this->setFiles;
 }
 
-void setControl::scrollContentsBy(int dx, int dy)
-{
-    QListWidget::scrollContentsBy(dx, dy);
+//void setControl::scrollContentsBy(int dx, int dy)
+//{
+//    QListWidget::scrollContentsBy(dx, dy);
 
-    bool scrolled_top = false;
-    //previous_scroll_y < dy &&
-    //(this->verticalScrollBar()->minimum() + this->reload_scroll_distance)
-    if(this->verticalScrollBar()->value() <= this->verticalScrollBar()->minimum())
-        scrolled_top = true;
+//    bool scrolled_top = false;
+//    //previous_scroll_y < dy &&
+//    //(this->verticalScrollBar()->minimum() + this->reload_scroll_distance)
+//    if(this->verticalScrollBar()->value() <= this->verticalScrollBar()->minimum())
+//        scrolled_top = true;
 
-    bool scrolled_bottom = false;
-    // - this->reload_scroll_distance)
-    if(this->verticalScrollBar()->value() >= this->verticalScrollBar()->maximum())
-        scrolled_bottom = true;
+//    bool scrolled_bottom = false;
+//    // - this->reload_scroll_distance)
+//    if(this->verticalScrollBar()->value() >= this->verticalScrollBar()->maximum())
+//        scrolled_bottom = true;
 
 
-    if(scrolled_top)
-        qDebug() << "FIRE FIRE FIRE FIRE!!!";
+//    if(scrolled_top)
+//        qDebug() << "FIRE FIRE FIRE FIRE!!!";
 
-    if(scrolled_bottom)
-    {
-        qDebug() << "WATER WATER WATER WATER!!!";
-        this->loadMore();
-    }
+//    if(scrolled_bottom)
+//    {
+//        qDebug() << "WATER WATER WATER WATER!!!";
+//        this->loadMore();
+//    }
 
-    this->previous_scroll_x = dx;
-    this->previous_scroll_y = dy;
-}
+//    this->previous_scroll_x = dx;
+//    this->previous_scroll_y = dy;
+//}
 
 //sets the image set as either being positive or negative sample
 bool setControl::setImageStatus(QString setType)
@@ -362,7 +345,7 @@ bool setControl::saveImage() {
 //    this->imgView->setCurrentBuffer(this->currentRow());
     std::cout << "file saved at : " << this->setFiles.at(this->currentRow())->getImageFileInfo().absoluteFilePath().toStdString() << std::endl;
     this->imgView->getCurrentBufferImage()->save(this->setFiles.at(this->currentRow())->getImageFileInfo().absoluteFilePath());
-    this->currentItem()->setIcon(QIcon(this->setFiles.at(this->currentRow())->getImageFileInfo().absoluteFilePath()));
+//    this->currentItem()->setIcon(QIcon(this->setFiles.at(this->currentRow())->getImageFileInfo().absoluteFilePath()));
     return true;
 }
 
@@ -473,3 +456,26 @@ void setControl::setSetSettingsFile()
     if(!this->setName.isEmpty())
         this->setSettings = new QSettings(this->setPath + QDir::separator() + this->setName + QDir::separator() + "setSettings.ini", QSettings::IniFormat, this);
 }
+
+void setControl::setFileNameLabel(QLabel *value)
+{
+    fileNameLabel = value;
+}
+
+void setControl::setFileSizeLabel(QLabel *value)
+{
+    fileSizeLabel = value;
+}
+
+void setControl::setMouseLocationLabel(QLabel *value) {
+    if(this->imgView) {
+        this->imgView->setMouseLocationLabel(value);
+    }
+}
+
+void setControl::setSetImagespinBox(QSpinBox *value) {
+    if(this->imgView) {
+        this->imgView->setSetImagespinBox(value);
+    }
+}
+

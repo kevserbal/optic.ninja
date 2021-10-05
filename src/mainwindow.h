@@ -27,6 +27,7 @@
 #include "src/setimage.h"
 #include "src/exportdataset.h"
 #include <QMenuBar>
+#include "setcontrollercontainerwidget.h"
 
 namespace Ui {
     class MainWindow;
@@ -120,12 +121,13 @@ class MainWindow : public QMainWindow
 
         void on_removeClassButton_clicked();
 
-        void on_classComboBox_currentIndexChanged(const QString &arg1);
-
         void on_actionExport_Dataset_triggered();
+
+        void on_classComboBox_currentTextChanged(const QString &arg1);
 
 signals:
         void newFrame(const Mat &matFrame);
+        void classIdChanged(int id);
 };
 
 

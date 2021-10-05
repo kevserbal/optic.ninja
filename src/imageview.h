@@ -105,6 +105,10 @@ public:
 
     int current_image_id;
 
+    void setMouseLocationLabel(QLabel *value);
+
+    void setSetImagespinBox(QSpinBox *value);
+
 private:
     Ui::ImageView *ui;
     //qwidget/qimage zoom level
@@ -150,6 +154,8 @@ private:
     qint8 drawTool;
 
     DataLocal *db;
+    QLabel *mouseLocationLabel = nullptr;
+    QSpinBox *setImageZoomSpinBox = nullptr;
 
 protected:
     void paintEvent(QPaintEvent* event);
@@ -166,6 +172,7 @@ signals:
 
 public slots:
     void clearImageBuffer();
+    void onCurrentClassIdChanged(int class_id);
 //    void keyPress();
 //    void KeyRelease();
 
@@ -173,6 +180,7 @@ private slots:
     void zoomChanged(int zoomLevelParm);
     void moveBufferForward();
     void moveBufferBackward();
+    void clearAllAnnotations();
     void deleteSelected();
 };
 

@@ -66,6 +66,7 @@ SET(SRCS
     src/annotation.cpp
     src/filelistmodel.cpp
     src/exportdataset.cpp
+    src/setcontrollercontainerwidget.cpp
     src/mainwindow.ui 
     src/createsetdialog.ui 
     src/imageview.ui 
@@ -91,6 +92,7 @@ SET(HDRS
     src/annotation.h
     src/filelistmodel.h
     src/exportdataset.h
+    src/setcontrollercontainerwidget.h
 )
 
 # UI files

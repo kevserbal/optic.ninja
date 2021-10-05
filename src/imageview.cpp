@@ -43,6 +43,16 @@ void ImageView::setCurrentBuffer(int currentImage) {
     this->currentBufferImageIndex = currentImage +1;
 }
 
+void ImageView::setMouseLocationLabel(QLabel *value)
+{
+    mouseLocationLabel = value;
+}
+
+void ImageView::setSetImagespinBox(QSpinBox *value)
+{
+    setImageZoomSpinBox = value;
+}
+
 void ImageView::setDrawingTool(qint8 drawToolParam)
 {
     this->drawTool = drawToolParam;
@@ -102,8 +112,6 @@ void ImageView::deleteSelected()
 
     this->update();
     this->reDraw();
-
-    std::cout << "Cleared annotations" << std::endl;
 }
 
 void ImageView::keyPressEvent(QKeyEvent *event)
@@ -400,9 +408,10 @@ void ImageView::mouseMoveEvent(QMouseEvent *event)
     // make sure the image buffer is allocated so we don't get index out of range could of used .empty()
     if(this->imageBuffer.size() > 0)
     {
-        QLabel *mouseLocationLabel = this->parentWidget()->parentWidget()->parentWidget()->findChild<QLabel *>("mouseLocationLabel");
-        mouseLocationLabel->setText("( " + QString::number(this->mouseXPosition) + ", " + QString::number(this->mouseYPosition) + " )" +
-                                    "[ " + QString::number(this->imageBuffer.at(this->currentBufferImageIndex-1).width()) + " / " + QString::number(this->imageBuffer.at(this->currentBufferImageIndex-1).height()) + " ] ");
+        if(this->mouseLocationLabel != nullptr){
+            mouseLocationLabel->setText("( " + QString::number(this->mouseXPosition) + ", " + QString::number(this->mouseYPosition) + " )" +
+                                        "[ " + QString::number(this->imageBuffer.at(this->currentBufferImageIndex-1).width()) + " / " + QString::number(this->imageBuffer.at(this->currentBufferImageIndex-1).height()) + " ] ");
+        }
     }
 
     //lets only set the "end point" for drawing when we release the left mouse button
@@ -530,15 +539,15 @@ void ImageView::wheelEvent(QWheelEvent * event)
 {
     if(this->imageBuffer.size() > 0)
     {
-        QSpinBox *setImageZoomSpinBox = this->parentWidget()->parentWidget()->parentWidget()->findChild<QSpinBox *>("setImagespinBox");
-
-        int numDegrees = event->delta() / 8;
-        int valueAdded = (numDegrees) + setImageZoomSpinBox->value();
-        //lets not zoom if the value is less then 1%
-        if(valueAdded > 10)
-        {
-            this->zoomChanged(valueAdded);
-            setImageZoomSpinBox->setValue(valueAdded);
+        if(setImageZoomSpinBox != nullptr) {
+            int numDegrees = event->delta() / 8;
+            int valueAdded = (numDegrees) + setImageZoomSpinBox->value();
+            //lets not zoom if the value is less then 1%
+            if(valueAdded > 10)
+            {
+                this->zoomChanged(valueAdded);
+                setImageZoomSpinBox->setValue(valueAdded);
+            }
         }
     }
 }
@@ -904,6 +913,10 @@ void ImageView::clearImageBuffer()
     this->imageBuffer.clear();
 }
 
+void ImageView::onCurrentClassIdChanged(int class_id) {
+    this->current_class_id = class_id;
+}
+
 QImage const *ImageView::getCurrentBufferImage()
 {
     if(this->currentBufferImageIndex < 1){
@@ -940,5 +953,19 @@ void ImageView::moveBufferBackward()
     }
 
 //    qDebug() << QString::number(this->imageBuffer.count());
-//    qDebug() << QString::number(this->currentBufferImageIndex);
+    //    qDebug() << QString::number(this->currentBufferImageIndex);
+}
+
+void ImageView::clearAllAnnotations() {
+    QList<Annotation>::iterator it = this->annotationsBuffer.begin();
+    while (it != this->annotationsBuffer.end()) {
+        Annotation annotation = *it;
+        this->db->removeAnnotation(this->current_image_id, annotation.id);
+        it = this->annotationsBuffer.erase(it);
+    }
+
+    this->update();
+    this->reDraw();
+
+    std::cout << "Cleared annotations" << std::endl;
 }

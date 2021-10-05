@@ -13,7 +13,7 @@ DEFINES += APP_VERSION=\\\"1.0.0\\\" \
             USECV3=0 \
             USECV4=1
 
-CONFIG += release
+CONFIG += debug
 QT       += core gui sql
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = optic.ninja
@@ -69,6 +69,7 @@ SOURCES += src/main.cpp \
     src/FrameLabel.cpp \
     src/objectdetection.cpp \
     src/setannotations.cpp \
+    src/setcontrollercontainerwidget.cpp \
     src/utility.cpp \
     src/detectionThread.cpp \
     src/setimage.cpp \
@@ -86,6 +87,7 @@ SOURCES += src/main.cpp \
 HEADERS += \
     src/mainwindow.h \
     src/setannotations.h \
+    src/setcontrollercontainerwidget.h \
     src/structures.h \
     src/FrameLabel.h \
     src/objectdetection.h \
