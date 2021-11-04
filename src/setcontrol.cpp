@@ -4,7 +4,7 @@ setControl::setControl(QWidget *parent) :
     QListWidget(parent)
 {
     connect(this, SIGNAL(currentRowChanged(int)), this, SLOT(setItemClicked(int)));
-
+    connect(this->verticalScrollBar(), &QScrollBar::valueChanged, this, &setControl::onVerticalScrollBarValueChanged);
     //create image viewer
     if(this->USE_GRAPHICS_VIEW)
         this->imgGView = new imageGraphicsView();
@@ -153,6 +153,13 @@ void setControl::setItemClicked(int currentRow) {
     }
 }
 
+void setControl::onVerticalScrollBarValueChanged(int value) {
+    if(value == this->verticalScrollBar()->maximum()) {
+        std::cout << "Value is max"<< std::endl;
+        this->loadMore();
+    }
+}
+
 //this is the current dataset name
 void setControl::setSetName(QString setNameParam)
 {
@@ -263,16 +270,16 @@ QList<SetImage *> *setControl::getSetFiles() //QString setNameParm, QString view
 
         this->setFiles.append(setImage);
 
-//        if(i < this->add_count)
-//        {
+        if(i < this->add_count)
+        {
             this->addSetItem(i);
-//        }
+        }
 
-//        else if(i > this->add_count)
-//        {
-//            this->high_index = this->add_count;
-//        }
-        //        QFileInfo fileInfoParm, QString fileSetTypeParm, int index, QObject *parent
+        else if(i > this->add_count)
+        {
+            this->high_index = this->add_count;
+        }
+//                QFileInfo fileInfoParm, QString fileSetTypeParm, int index, QObject *parent
 //        this->addSetItem(i, new SetImage(tempFileInfoList.value(i), QString("Undefined"), i));
     }
 

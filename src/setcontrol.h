@@ -99,6 +99,7 @@ signals:
 
 public slots:
         void setItemClicked(int currentRow);
+        void onVerticalScrollBarValueChanged(int value);
 
 };
 
